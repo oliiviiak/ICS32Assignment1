@@ -4,6 +4,7 @@
 # 92692989
 
 from pathlib import Path
+import shlex
 
 
 # helper method for printing paths
@@ -111,6 +112,18 @@ def list_files_extensions_recursively(path, extension_name):
     print_values(all_files)
 
 
+# # C -n command
+# def create_new_file_in_dir(path, file_name):
+
+
+# # D command
+# def delete_dsu_file(path):
+
+
+# # R command
+# def print_contents_of_dsu_file(path, file_name):
+
+
 def welcome():
     print("Welcome to the File System Inspector!\n")
     print("Here's the format for the user input:")
@@ -126,7 +139,7 @@ def welcome():
 
 
 def main():
-    welcome()
+    # welcome()
 
     while True:
 
@@ -135,7 +148,7 @@ def main():
         if not user_input:
             continue
 
-        full_input = user_input.split()
+        full_input = shlex.split(user_input)
         command = full_input[0]
 
         if command == "Q":
