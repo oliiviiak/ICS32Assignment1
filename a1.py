@@ -121,7 +121,7 @@ def create_new_file_in_dir(path, file_name):
     if not p.is_dir():
         raise NotADirectoryError(f"Error: the path {path} is not a directory.")
     
-    dsu_filename = f"{FileExistsError}.dsu"
+    dsu_filename = f"{file_name}.dsu"
     file_path = p / dsu_filename
 
     file_path.touch()
@@ -129,7 +129,18 @@ def create_new_file_in_dir(path, file_name):
 
 
 # # D command
-# def delete_dsu_file(path):
+def delete_dsu_file(file_path):
+    p = Path(file_path)
+
+    if not p.exists():
+        raise FileNotFoundError(f"Error: the file {file_path} was not found.")
+    if not p.is_file():
+        raise ValueError(f"Error: the path {file_path} is not a file.")
+    if p.suffix != ".dsu":
+        raise ValueError("ERROR")
+    
+    p.unlink()
+    print(f"{file_path} DELETED ")
 
 
 # # R command
@@ -153,58 +164,61 @@ def welcome():
 def main():
     # welcome()
 
-    while True:
+    # create_new_file_in_dir("testdir", "hello.dsu")
+    # delete_dsu_file("testdir/hello.dsu")
 
-        user_input = input("\nEnter command or type \"Q\" to quit: ").strip()
+    # while True:
 
-        if not user_input:
-            continue
+    #     user_input = input("\nEnter command or type \"Q\" to quit: ").strip()
 
-        full_input = shlex.split(user_input)
-        command = full_input[0]
+    #     if not user_input:
+    #         continue
 
-        if command == "Q":
-            break
+    #     full_input = shlex.split(user_input)
+    #     command = full_input[0]
 
-        if command == "L":
-            if len(full_input) < 2:
-                continue
+    #     if command == "Q":
+    #         break
 
-            path = full_input[1]
-            option = full_input[2:]
+    #     if command == "L":
+    #         if len(full_input) < 2:
+    #             continue
 
-            try:
-                # recursive functions
-                if len(option) == 0:
-                    list_files(path)
-                elif option[0] == "-r":
-                    if len(option) == 1:
-                        list_recursively(path)
-                    elif option[1] == "-f":
-                        list_only_files_recursively(path)
-                    elif option[1] == "-s" and len(option) > 2:
-                        list_exact_filename_recursively(path, option[2])
-                    elif option[1] == "-e" and len(option) > 2:
-                        list_files_extensions_recursively(path, option[2])
+    #         path = full_input[1]
+    #         option = full_input[2:]
 
-                # non-recursive functions
-                elif option[0] == "-f":
-                    list_only_files(path)
-                elif option[0] == "-s" and len(option) > 1:
-                    list_exact_filename(path, option[1])
-                elif option[0] == "-e" and len(option) > 1:
-                    list_files_extensions(path, option[1])
+    #         try:
+    #             # recursive functions
+    #             if len(option) == 0:
+    #                 list_files(path)
+    #             elif option[0] == "-r":
+    #                 if len(option) == 1:
+    #                     list_recursively(path)
+    #                 elif option[1] == "-f":
+    #                     list_only_files_recursively(path)
+    #                 elif option[1] == "-s" and len(option) > 2:
+    #                     list_exact_filename_recursively(path, option[2])
+    #                 elif option[1] == "-e" and len(option) > 2:
+    #                     list_files_extensions_recursively(path, option[2])
 
-            except FileNotFoundError:
-                print(f"Error: the path '{path}' was not found.")
-            except NotADirectoryError:
-                print(f"Error: '{path}' is a valid file path,",
-                      "but a directory path is required.")
-            except PermissionError:
-                print(f"Error: Permission denied for '{path}'")
+    #             # non-recursive functions
+    #             elif option[0] == "-f":
+    #                 list_only_files(path)
+    #             elif option[0] == "-s" and len(option) > 1:
+    #                 list_exact_filename(path, option[1])
+    #             elif option[0] == "-e" and len(option) > 1:
+    #                 list_files_extensions(path, option[1])
 
-        else:
-            print("Invalid/Unsupported, try again.")
+    #         except FileNotFoundError:
+    #             print(f"Error: the path '{path}' was not found.")
+    #         except NotADirectoryError:
+    #             print(f"Error: '{path}' is a valid file path,",
+    #                   "but a directory path is required.")
+    #         except PermissionError:
+    #             print(f"Error: Permission denied for '{path}'")
+
+    #     else:
+    #         print("Invalid/Unsupported, try again.")
 
 
 if __name__ == "__main__":
