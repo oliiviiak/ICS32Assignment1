@@ -113,7 +113,19 @@ def list_files_extensions_recursively(path, extension_name):
 
 
 # # C -n command
-# def create_new_file_in_dir(path, file_name):
+def create_new_file_in_dir(path, file_name):
+    p = Path(path)
+    
+    if not p.exists():
+        raise FileNotFoundError(f"Error: the path {path} was not found.")
+    if not p.is_dir():
+        raise NotADirectoryError(f"Error: the path {path} is not a directory.")
+    
+    dsu_filename = f"{FileExistsError}.dsu"
+    file_path = p / dsu_filename
+
+    file_path.touch()
+    print(file_path)
 
 
 # # D command
