@@ -144,7 +144,22 @@ def delete_dsu_file(file_path):
 
 
 # # R command
-# def print_contents_of_dsu_file(path, file_name):
+def print_contents_of_dsu_file(file_path):
+    p = Path(file_path)
+
+    if not p.exists():
+        raise FileNotFoundError(f"Error: the file {file_path} was not found.")
+    if not p.is_file():
+        raise ValueError(f"Error: the path {file_path} is not a file.")
+    if p.suffix != ".dsu":
+        raise ValueError("ERROR")
+    
+    content = p.read_text()
+
+    if not content:
+        print("EMPTY")
+    else:
+        print(content, end='')
 
 
 def welcome():
@@ -164,8 +179,9 @@ def welcome():
 def main():
     # welcome()
 
-    # create_new_file_in_dir("testdir", "hello.dsu")
+    create_new_file_in_dir("testdir", "hello")
     # delete_dsu_file("testdir/hello.dsu")
+    print_contents_of_dsu_file("testdir/hello.dsu")
 
     # while True:
 
