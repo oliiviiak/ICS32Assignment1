@@ -61,10 +61,14 @@ def list_only_files_recursively(path):
     p = Path(path)
     all_files = []
 
-    for item in p.rglob("*"):
-        if item.is_file():
-            all_files.append(item)
+    def recurse_dir(directory):
+        for item in directory.iterdir():
+            if item.is_file():
+                all_files.append(item)
+            elif item.is_dir():
+                recurse_dir(item)
 
+    recurse_dir(p)
     print_values(all_files)
 
 
@@ -85,10 +89,14 @@ def list_exact_filename_recursively(path, file_name):
     p = Path(path)
     all_files = []
 
-    for item in p.rglob("*"):
-        if item.is_file() and item.name == file_name:
-            all_files.append(item)
+    def recurse_dir(directory):
+        for item in directory.iterdir():
+            if item.is_file() and item.name == file_name:
+                all_files.append(item)
+            elif item.is_dir():
+                recurse_dir(item)
 
+    recurse_dir(p)
     print_values(all_files)
 
 
@@ -109,10 +117,14 @@ def list_files_extensions_recursively(path, extension_name):
     p = Path(path)
     all_files = []
 
-    for item in p.rglob("*"):
-        if item.is_file() and item.suffix[1:] == extension_name:
-            all_files.append(item)
+    def recurse_dir(directory):
+        for item in directory.iterdir():
+            if item.is_file() and item.suffix[1:] == extension_name:
+                all_files.append(item)
+            elif item.is_dir():
+                recurse_dir(item)
 
+    recurse_dir(p)
     print_values(all_files)
 
 
