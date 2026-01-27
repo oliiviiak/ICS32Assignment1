@@ -131,12 +131,12 @@ def list_files_extensions_recursively(path, extension_name):
 # # C -n command
 def create_new_file_in_dir(path, file_name):
     p = Path(path)
-    
+
     if not p.exists():
         raise FileNotFoundError(f"Error: the path {path} was not found.")
     if not p.is_dir():
         raise NotADirectoryError(f"Error: the path {path} is not a directory.")
-    
+
     dsu_filename = f"{file_name}.dsu"
     file_path = p / dsu_filename
 
@@ -154,7 +154,7 @@ def delete_dsu_file(file_path):
         raise ValueError(f"Error: the path {file_path} is not a file.")
     if p.suffix != ".dsu":
         raise ValueError("ERROR")
-    
+
     p.unlink()
     print(f"{file_path} DELETED")
 
@@ -169,7 +169,7 @@ def read_dsu_file(file_path):
         raise ValueError(f"Error: the path {file_path} is not a file.")
     if p.suffix != ".dsu":
         raise ValueError("ERROR")
-    
+
     content = p.read_text()
 
     if not content:
@@ -182,15 +182,18 @@ def read_dsu_file(file_path):
 def parse_L_command(full_input):
     if len(full_input) < 2:
         return None, None
-    
+
     option_start_index = len(full_input)
     for i in range(2, len(full_input)):
         if full_input[i].startswith('-'):
             option_start_index = i
             break
-    
+
     path = " ".join(full_input[1: option_start_index])
-    options = full_input[option_start_index:] if option_start_index < len(full_input) else []
+    if option_start_index < len(full_input):
+        options = full_input[option_start_index:]
+    else:
+        options = []
 
     return path, options
 
@@ -199,16 +202,16 @@ def parse_L_command(full_input):
 def parse_C_command(full_input):
     if len(full_input) < 4:
         return None, None
-    
+
     option_start_index = -1
     for i in range(2, len(full_input)):
         if full_input[i] == '-n':
             option_start_index = i
             break
-    
+
     if option_start_index == -1 or option_start_index == len(full_input) - 1:
         return None, None
-    
+
     path = " ".join(full_input[1: option_start_index])
     filename = full_input[option_start_index + 1]
 
@@ -223,7 +226,7 @@ def main():
 
         if not user_input:
             continue
-        
+
         try:
             full_input = shlex.split(user_input)
             command = full_input[0]
@@ -269,7 +272,7 @@ def main():
                     print("ERROR")
                     continue
                 create_new_file_in_dir(path, name)
-            
+
             elif command == "D":
                 if len(full_input) < 2:
                     print("ERROR")
@@ -285,7 +288,7 @@ def main():
 
                 file_path = " ".join(full_input[1:])
                 read_dsu_file(file_path)
-            
+
             else:
                 print("ERROR")
 
