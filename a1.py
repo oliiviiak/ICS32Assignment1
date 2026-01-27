@@ -38,11 +38,9 @@ def list_recursively(path):
         for item in directory.iterdir():
             all_files_dirs.append(item)
             if item.is_dir():
-                
+                recurse_dir(item)
 
-    for item in p.rglob("*"):
-        all_files_dirs.append(item)
-
+    recurse_dir(p)
     print_values(all_files_dirs)
 
 
