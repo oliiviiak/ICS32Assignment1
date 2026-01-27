@@ -140,7 +140,7 @@ def delete_dsu_file(file_path):
         raise ValueError("ERROR")
     
     p.unlink()
-    print(f"{file_path} DELETED ")
+    print(f"{file_path} DELETED")
 
 
 # # R command
@@ -169,19 +169,61 @@ def welcome():
     print("Commands:")
     print("  L - List the contents of the user specified directory.")
     print("  Q - Quit the program.\n")
+    print("  C - Create a new file in the specified directory.")
+    print("  D - Delete the file.")
+    print("  R - Read the contents of a file.")
     print("Options for \"L\":")
     print("-r Output directory content recursively.")
     print("-f Output only files, excluding directories in the results.")
     print("-s Output only files that match a given file name.")
     print("-e Output only files that match a given file extension.")
+    print("Options for \"C\":")
+    print("-n allows the user to specify the name of the file.")
+
+
+# helper method for receiving input correctly for L
+def parse_L_command(full_input):
+    if len(full_input) < 2:
+        return None, None
+    
+    option_start_index = len(full_input)
+    for i in range(2, len(full_input)):
+        if full_input[i].startswith('-'):
+            option_start_index = i
+            break
+    
+    path = " ".join(full_input[1: option_start_index])
+    options = full_input[option_start_index] if option_start_index < len(full_input) else []
+
+    return path, options
+
+
+# helper method for receiving input correctly for C
+def parse_C_command(full_input):
+    if len(full_input) < 4:
+        return None, None
+    
+    option_start_index = -1
+    for i in range(2, len(full_input)):
+        if full_input[i] == '-n':
+            option_start_index = i
+            break
+    
+    if option_start_index == -1 or option_start_index == len(full_input) - 1:
+        return None, None
+    
+    path = " ".join(full_input[1: option_start_index])
+    filename = full_input[option_start_index + 1]
+
+    return path, filename
 
 
 def main():
-    welcome()
+    # welcome()
 
     while True:
 
-        user_input = input("\nEnter command or type \"Q\" to quit: ").strip()
+        user_input = input().strip()
 
         if not user_input:
             continue
