@@ -34,6 +34,12 @@ def list_recursively(path):
     p = Path(path)
     all_files_dirs = []
 
+    def recurse_dir(directory):
+        for item in directory.iterdir():
+            all_files_dirs.append(item)
+            if item.is_dir():
+                
+
     for item in p.rglob("*"):
         all_files_dirs.append(item)
 
@@ -162,25 +168,6 @@ def read_dsu_file(file_path):
         print(content, end='')
 
 
-def welcome():
-    print("Welcome to the File System Inspector!\n")
-    print("Here's the format for the user input:")
-    print("[COMMAND] [INPUT] [[-]OPTION] [INPUT]\n")
-    print("Commands:")
-    print("  L - List the contents of the user specified directory.")
-    print("  Q - Quit the program.\n")
-    print("  C - Create a new file in the specified directory.")
-    print("  D - Delete the file.")
-    print("  R - Read the contents of a file.")
-    print("Options for \"L\":")
-    print("-r Output directory content recursively.")
-    print("-f Output only files, excluding directories in the results.")
-    print("-s Output only files that match a given file name.")
-    print("-e Output only files that match a given file extension.")
-    print("Options for \"C\":")
-    print("-n allows the user to specify the name of the file.")
-
-
 # helper method for receiving input correctly for L
 def parse_L_command(full_input):
     if len(full_input) < 2:
@@ -193,7 +180,7 @@ def parse_L_command(full_input):
             break
     
     path = " ".join(full_input[1: option_start_index])
-    options = full_input[option_start_index] if option_start_index < len(full_input) else []
+    options = full_input[option_start_index:] if option_start_index < len(full_input) else []
 
     return path, options
 
@@ -219,7 +206,6 @@ def parse_C_command(full_input):
 
 
 def main():
-    # welcome()
 
     while True:
 
@@ -236,11 +222,11 @@ def main():
                 break
 
             elif command == "L":
-                if len(full_input) < 2:
-                    continue
+                path, option = parse_L_command(full_input)
 
-                path = full_input[1]
-                option = full_input[2:]
+                if path is None:
+                    print("ERROR")
+                    continue
 
                 # recursive functions
                 if len(option) == 0:
@@ -254,6 +240,8 @@ def main():
                         list_exact_filename_recursively(path, option[2])
                     elif option[1] == "-e" and len(option) > 2:
                         list_files_extensions_recursively(path, option[2])
+                    else:
+                        print("ERROR")
 
                 # non-recursive functions
                 elif option[0] == "-f":
@@ -262,22 +250,22 @@ def main():
                     list_exact_filename(path, option[1])
                 elif option[0] == "-e" and len(option) > 1:
                     list_files_extensions(path, option[1])
+                else:
+                    print("ERROR")
 
             elif command == "C":
-                if len(full_input) < 4 or full_input[2] != "-n":
+                path, name = parse_C_command(full_input)
+                if path is None or name is None:
                     print("ERROR")
                     continue
-
-                path = full_input[1]
-                file_name = full_input[3]
-                create_new_file_in_dir(path, file_name)
+                create_new_file_in_dir(path, name)
             
             elif command == "D":
                 if len(full_input) < 2:
                     print("ERROR")
                     continue
 
-                file_path = full_input[1]
+                file_path = " ".join(full_input[1:])
                 delete_dsu_file(file_path)
 
             elif command == "R":
@@ -285,7 +273,7 @@ def main():
                     print("ERROR")
                     continue
 
-                file_path = full_input[1]
+                file_path = " ".join(full_input[1:])
                 read_dsu_file(file_path)
             
             else:
